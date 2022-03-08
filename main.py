@@ -1,7 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
+from sqlalchemy import false
 import calend
 import roommate
+from collections import defaultdict
+
 app = Flask(__name__)
+
+current_user = None
+groups = []
 
 @app.route('/')
 def base():
@@ -30,15 +36,29 @@ def register():
         name = request.form['name']
         birthday = request.form['birthday']
         result = roommate.register(name, username, password, birthday)
-        if result == True:
-            return render_template('success.html')
+        if result == True: 
+            return render_template('success.html', message = "Event Created")
         else:
             return render_template('register.html', error_message = result)
     return render_template('register.html')
 
 @app.route('/calendar', methods = ["POST", "GET"])
 def calendar():
-    pass
+    return render_template("calendar.html", calendar = current_user.calendar.calendar)
+
+@app.route('/create', methods = ["POST", "GET"])
+def create():
+    if request.method == 'POST':
+        name = request.form['name']
+        date = request.form['date']
+        description = request.form['description']
+        result = current_user.calendar.create_event(name,date,description)
+        if result == True:
+            return render_template('success.html', message = "Event Created")
+        else:
+            return render_template('create.html', error_message = result)
+    return render_template("create.html")
+
 
 
 
@@ -48,6 +68,8 @@ def calendar():
 
 
 if __name__ == "__main__":
+    roommate.register("Tyrone", "a@email.com", "a2", "01132000")
+
     app.run()
 #     a = Event("a", "d" , "01122000")
 #     b = Event("a", "d" , "01122000")

@@ -1,9 +1,3 @@
-
-class Calendar:
-    def __init__(self):
-        self.calendar = []
-
-
 class Event:
     def __init__(self, name, description, date):
         self.name = name
@@ -43,5 +37,29 @@ class Event:
             return True
         elif self.day < other.day:
             return False
-
         return False
+
+class Calendar:
+    def __init__(self):
+        self.calendar = []
+
+    def create_event(self, name, date, description):
+        if len(name) > 0:
+            try:
+                month = int(date[0:2])
+                day  = int(date[2:4])
+                year = int(date[4:8])
+                if month > 0 and month <= 12:
+                    if day > 0 and day <= 31:
+                        if year > 0:
+                            temp = Event(name, description, date)
+                            self.calendar.append(temp)
+                            return True
+            except:
+                return "Invalid Date!"
+        else:
+            return "Invalid Name"
+
+
+
+

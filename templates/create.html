@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Create Event Page{% endblock %}
+{% block content %}
+
+<br>
+
+<body>
+	<form action ="/create" style="width:500px; margin:auto" method="POST">
+	<div class="form-group">
+		<h2>Create Event</h2>
+        <input type="text" name="name" id="name" class="form-control" placeholder="Name">
+	<br>
+        <input type="text" name="date" id="date" class="form-control" placeholder="Date (MMDDYYYY)">
+	<br>
+		<input type="text" name="description" id="description" class="form-control" placeholder="Description">
+	<br>
+
+	<center> {{error_message}} </center>
+
+	<br>
+	<center><button type="create" class="btn btn-primary" style="width:500px; margin:auto">Create Event</button></center>
+	</form>
+</body> 
+
+{% endblock %}

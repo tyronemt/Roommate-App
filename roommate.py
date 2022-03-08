@@ -1,7 +1,7 @@
 from re import U
-
-
+import calend
 users = []
+
 
 class Roommate:
   def __init__(self, name, username, password, birthday):
@@ -9,6 +9,7 @@ class Roommate:
     self.birthday = birthday
     self.username = username
     self.password = password
+    self.calendar = calend.Calendar()
 
 def login(username, password):
   for i in users:
