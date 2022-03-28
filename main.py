@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import false
 import calend
 import roommate
-from collections import defaultdict
 
 app = Flask(__name__)
 
@@ -58,6 +57,12 @@ def create():
         else:
             return render_template('create.html', error_message = result)
     return render_template("create.html")
+
+@app.route('/group', methods = ["POST", "GET"])
+def group():
+    return render_template("group.html")
+
+
 
 
 

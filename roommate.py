@@ -2,9 +2,22 @@ from re import U
 import calend
 users = []
 
+class Group:
+  def __init__(self):
+    self.members = []
+  
+  def remove_member(self, id):
+    n = 0
+    for i in self.members:
+      if i.id == id:
+        self.members.pop(n)
+      n+=1
 
 class Roommate:
+  next_id = 0
   def __init__(self, name, username, password, birthday):
+    self.id = Roommate.next_id
+    Roommate.next_id += 1
     self.name = name
     self.birthday = birthday
     self.username = username
