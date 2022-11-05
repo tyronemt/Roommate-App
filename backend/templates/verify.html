@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Verify{% endblock %}
+{% block content %}
+<form method = "post">
+    <input type="text" id="verify" name="verify"><br>
+</form>
+
+<center> {{error_message}} </center>
+{% endblock %}

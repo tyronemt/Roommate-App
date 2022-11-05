@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<form method = "post">
+    <input type="text" id="phone_number" name="phone_number"><br>
+</form>
+
+<center> {{error_message}} </center>
+{% endblock %}
