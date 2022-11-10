@@ -1,34 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from twilio.rest import Client
-import keys
 import re
-import random
-import math
-import mysql.connector
+import helper
 import db
-
-
-def random_passcode():
-    digits = [i for i in range(0, 10)]
-    random_str = ""
-    for i in range(6):
-        index = math.floor(random.random() * 10)
-        random_str += str(digits[index])
-
-    print(random_str)
-    return random_str
-
-def send_verification(phone_number):
-    client = Client(keys.account_sid, keys.auth_token)
-    code = random_passcode()
-    print(phone_number)
-    message = client.messages.create(
-        body = code,
-        from_ = keys.twilio_number,
-        to = phone_number
-    )
-    return code
-    
 
 app = Flask(__name__)
 
@@ -41,8 +14,11 @@ def base():
         else:
             global current_phone_number, code
             current_phone_number =  "+1" + phone_number
-            code = send_verification(current_phone_number)
-            return redirect(url_for('verify'))
+            code = helper.send_verification(current_phone_number)
+            if code == None:
+                return render_template('home.html', error_message = "Invalid Phone Number")
+            else:
+                return redirect(url_for('verify'))
         
     return render_template('home.html')
 
@@ -53,20 +29,28 @@ def verify():
         verify = request.form.get('verify', None)
         if verify == code:
             if db.check_user(current_phone_number):
-                return redirect(url_for('returning'))
+                return redirect(url_for('main'))
             else:
                 return redirect(url_for('new'))
     return render_template('verify.html')
 
-@app.route('/returning', methods = ["POST", "GET"])
-def returning():
-   
-    return render_template('returning.html')
 
 @app.route('/new', methods = ["POST", "GET"])
 def new():
-    
+    if request.method == 'POST':
+        name = request.form.get('name', None)
+        birthday = request.form.get('birthday', None)
+        if helper.check_birthday(birthday):
+            return render_template("new.html", error_message = "Invalid Birthday" )
+        else:
+            db.create_user(current_phone_number, name, birthday)
+            return redirect(url_for("main"))
     return render_template('new.html')
+
+
+@app.route('/main', methods = ["POST", "GET"])
+def main():
+    return render_template('main.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

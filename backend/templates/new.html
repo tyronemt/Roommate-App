@@ -2,6 +2,10 @@
 {% block title %} New Page{% endblock %}
 {% block content %}
 <h1> NEW </h1>
-
+<form method = "post">
+    <input type="text" id="name" name="name"><br>
+    <input type="text" id="birthday" name="birthday" placeholder="MMDDYYYY"><br>
+    <button type="submit">submit</button>
+</form>
 <center> {{error_message}} </center>
 {% endblock %}

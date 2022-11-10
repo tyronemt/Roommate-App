@@ -1,9 +1,25 @@
-{% extends "base.html" %}
-{% block title %}Home Page{% endblock %}
-{% block content %}
-<form method = "post">
-    <input type="text" id="phone_number" name="phone_number"><br>
-</form>
+<!doctype html>
+<html>
+<link rel="stylesheet" type="text/css" href=" {{url_for('static', filename='home.css')}}">
 
-<center> {{error_message}} </center>
-{% endblock %}
+<body>
+    <div class="center">
+        <h1>Sign In</h1>
+        <!-- <h2>Enter your phone number to recieve a one-time code to login.</h2> -->
+        <form method = "post">
+            <div class="txt_field"> 
+                <input type="text" id="phone_number" name="phone_number" required> 
+                <span></span>
+                <label>Phone Number</label>
+            </div>
+            <input type="submit" value="Sign In">
+        </form>
+    <div>
+    <div class= "error">
+        <center> {{error_message}} </center>
+    </div>
+   
+    
+</body>
+
+</html>

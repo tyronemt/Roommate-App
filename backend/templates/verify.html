@@ -1,9 +1,24 @@
-{% extends "base.html" %}
-{% block title %}Verify{% endblock %}
-{% block content %}
-<form method = "post">
-    <input type="text" id="verify" name="verify"><br>
-</form>
+<!doctype html>
+<html>
+<link rel="stylesheet" type="text/css" href=" {{url_for('static', filename='verify.css')}}">
 
-<center> {{error_message}} </center>
-{% endblock %}
+<body>
+    <div class="center">
+        <h1>Verify</h1>
+        <form method = "post">
+            <div class="txt_field"> 
+                <input type="text" id="verify" name="verify" required> 
+                <span></span>
+                <label>Verification Code</label>
+            </div>
+            <input type="submit" value="Verify">
+        </form>
+    <div>
+    <div class= "error">
+        <center> {{error_message}} </center>
+    </div>
+   
+    
+</body>
+
+</html>
