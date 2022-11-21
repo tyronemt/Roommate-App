@@ -32,6 +32,8 @@ def verify():
                 return redirect(url_for('main'))
             else:
                 return redirect(url_for('new'))
+        else:
+            return render_template('verify.html', error_message = "Incorrect Verification Code")
     return render_template('verify.html')
 
 
@@ -47,10 +49,33 @@ def new():
             return redirect(url_for("main"))
     return render_template('new.html')
 
-
 @app.route('/main', methods = ["POST", "GET"])
 def main():
     return render_template('main.html')
+
+@app.route('/create', methods = ["POST", "GET"])
+def create():
+    if request.method == 'POST':
+        name = request.form.get('name', None)
+        code = helper.random_passcode()
+        db.create_group(current_phone_number, name, code)
+        return redirect(url_for("group"))
+    return render_template('create.html')
+
+@app.route('/join', methods = ["POST", "GET"])
+def join():
+    if request.method == 'POST':
+        code = request.form.get('code', None)
+        result = db.add_member(current_phone_number, code)
+        if result:
+            return redirect(url_for("group"))
+        else:
+            return render_template('join.html', error_message = "Error Joining")
+    return render_template('join.html')
+
+@app.route('/group', methods = ["POST", "GET"])
+def group():
+    return render_template('group.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

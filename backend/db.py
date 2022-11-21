@@ -7,15 +7,27 @@ mydb = mysql.connector.connect(
 )
 
 
-def create_table():
+def drop_db():
+  cursor = mydb.cursor()
+  cursor.execute("DROP DATABASE `roommate`;")
+
+def create_db():
 
   cursor = mydb.cursor()
-  cursor.execute("CREATE DATABASE IF NOT EXISTS roommate")
+  cursor.execute("CREATE DATABASE IF NOT EXISTS roommate;")
 
   cursor.execute("USE roommate;")
 
   cursor.execute("CREATE TABLE IF NOT EXISTS USERS (phoneNumber varchar(255) NOT NULL, name varchar(255) NOT NULL, birthday DATE NOT NULL, UNIQUE (`phoneNumber`));")
+  
+  cursor.execute("CREATE TABLE IF NOT EXISTS HOUSE (code varchar(255) NOT NULL, name varchar(255) NOT NULL, UNIQUE (`code`));")
+
+  cursor.execute("CREATE TABLE IF NOT EXISTS MEMBERS (code varchar(255) NOT NULL, phoneNumber varchar(255) NOT NULL, UNIQUE (`phoneNumber`));")
+
+  print(cursor.rowcount, "record inserted.")
+
   cursor.close()
+
 
 def check_user(phone_number):
 
@@ -45,4 +57,48 @@ def create_user(phone_number, name, birthday):
   print(cursor.rowcount, "record inserted.")
   cursor.close()
 
-create_table()
+def create_group(phone_number, name, group_id):
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  query = "INSERT INTO HOUSE(code, name) VALUES ('%s', '%s');" % (group_id, name)
+  cursor.execute(query)
+  mydb.commit()
+  print(cursor.rowcount, "record inserted.")
+  cursor.close()
+  add_member(phone_number, group_id)
+
+def check_group(group_id):
+  cursor = mydb.cursor()
+  res = False
+  cursor.execute("USE roommate;")
+  query = "SELECT * FROM HOUSE WHERE code = '%s';" %group_id
+  cursor.execute(query)
+
+  myresult = cursor.fetchall()
+
+  for i in myresult:
+    res = True
+  cursor.close()
+  return res
+
+
+def add_member(phone_number, group_id):
+  cursor = mydb.cursor()
+  if check_group(group_id):
+    cursor.execute("USE roommate;")
+    query = "INSERT INTO MEMBERS(code, phoneNumber) VALUES ('%s', '%s');" % (group_id, phone_number)
+    try:
+      cursor.execute(query)
+      mydb.commit()
+      result = True
+    except:
+      result = False
+    cursor.close()
+    return result
+  else:
+    result = False
+    return False
+
+if __name__ == '__main__':
+  drop_db()
+  create_db()
