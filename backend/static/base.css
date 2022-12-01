@@ -84,11 +84,33 @@ input[type="submit"]{
     margin-bottom:  30px;
 }
 
-input[type="submit"]:hover{
+input[type="button"]{
+    width: 7%;
+    transform: translateX(15%) translateY(40%);
+    height: 50px;
+    border: 1px solid;
+    background: #2691d9;
+    border-radius: 25px;
+    font-size: 18px;
+    color: #e9f4fb;
+    font-weight: 700;
+    cursor: pointer;
+    outline:none;
+    margin-bottom:  30px;
+}
+
+input[type="button"]:hover{
     border-color: #2691d9;
     transition: 0.5s;
     
 }
+
+input[type="button"]:hover{
+    border-color: #2691d9;
+    transition: 0.5s;
+    
+}
+
 .error{
     font-weight: 700;
     margin-bottom:  30px;

@@ -1,7 +1,20 @@
 <!doctype html>
 <html>
-    <body>
-        <p><a href="{{ url_for('create') }}">Create</a></p>
-        <p><a href="{{ url_for('join') }}">Join</a></p>
-    </body>
+<link rel="stylesheet" type="text/css" href=" {{url_for('static', filename='base.css')}}">
+
+<body>
+    <div class="center">
+        <h1>Main Menu</h1>
+        <div>
+            <form action="{{ url_for('create') }}"> 
+                <input type="submit" value="Create"/>
+            </form>
+        </div>
+        <div>
+            <form action="{{ url_for('join') }}">
+                <input type="submit" value="Join" />
+            </form>
+        </div>
+    <div>
+</body>
 </html>
