@@ -1,5 +1,5 @@
 import mysql.connector
-
+import datetime
 mydb = mysql.connector.connect(
     host = "localhost",
     user = "root",
@@ -24,6 +24,9 @@ def create_db():
 
   cursor.execute("CREATE TABLE IF NOT EXISTS MEMBERS (code varchar(255) NOT NULL, phoneNumber varchar(255) NOT NULL, UNIQUE (`phoneNumber`));")
 
+  cursor.execute("CREATE TABLE IF NOT EXISTS EVENTS (code varchar(255) NOT NULL, name varchar(255) NOT NULL, d DATE NOT NULL);")
+
+  cursor.execute("CREATE TABLE IF NOT EXISTS BIRTHDAYS (code varchar(255) NOT NULL, name varchar(255) NOT NULL, d DATE NOT NULL);")
   print(cursor.rowcount, "record inserted.")
 
   cursor.close()
@@ -45,13 +48,35 @@ def check_user(phone_number):
   return res
 
 def create_user(phone_number, name, birthday):
-
   cursor = mydb.cursor()
   m = birthday[0:2]
   d = birthday[2:4]
   y = birthday[4:8]
+  date = y + '-' + m + '-' + d
   cursor.execute("USE roommate;")
-  query = "INSERT INTO USERS(phoneNumber, name, birthday) VALUES ('%s', '%s', '%s');" % (phone_number, name, y + '-' + m + '-' + d)
+  query = "INSERT INTO USERS(phoneNumber, name, birthday) VALUES ('%s', '%s', '%s');" % (phone_number, name, date)
+  cursor.execute(query)
+  mydb.commit()
+  print(cursor.rowcount, "record inserted.")
+  cursor.close()
+
+def add_birthday(phone_number, name, date):
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  code = check_member(phone_number)
+  query = 'INSERT INTO BIRTHDAYS(code, NAME, d) VALUES ("%s", "%s", "%s");' % (code,name,date)
+  print(query)
+  cursor.execute(query)
+  mydb.commit()
+  print(cursor.rowcount, "record inserted.")
+  cursor.close()
+
+def add_event(phone_number, name, date):
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  code = check_member(phone_number)
+  query = 'INSERT INTO EVENTS(code, NAME, d) VALUES ("%s", "%s", "%s");' % (code,name,date)
+  print(query)
   cursor.execute(query)
   mydb.commit()
   print(cursor.rowcount, "record inserted.")
@@ -81,6 +106,16 @@ def check_group(group_id):
   cursor.close()
   return res
 
+def check_member(phone_number):
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  query = "SELECT code FROM MEMBERS WHERE phoneNumber = '%s';" %phone_number
+  cursor.execute(query)
+  myresult = cursor.fetchall()
+  for i in myresult:
+    return i[0]
+  return None
+
 
 def add_member(phone_number, group_id):
   cursor = mydb.cursor()
@@ -90,6 +125,7 @@ def add_member(phone_number, group_id):
     try:
       cursor.execute(query)
       mydb.commit()
+      insert_birthday(phone_number, group_id)
       result = True
     except:
       result = False
@@ -98,6 +134,51 @@ def add_member(phone_number, group_id):
   else:
     result = False
     return False
+
+def insert_birthday(phone_number, group_id):
+    cursor = mydb.cursor()
+    cursor.execute("USE roommate;")
+    query = "SELECT name, birthday FROM USERS WHERE phoneNumber = %s;" %(phone_number)
+    cursor.execute(query)
+    myresult = cursor.fetchall()
+    for i in myresult:
+      name = i[0]
+      birthday = i[1]
+    
+
+    n = name + "'s Birthday"
+    add_birthday(phone_number, n, birthday)
+    cursor.close()
+
+def get_events(phone_number):
+  lst = []  
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  today = datetime.date.today()
+  code = check_member(phone_number)
+  later = today + datetime.timedelta(days=7)
+  query = "SELECT * FROM EVENTS WHERE code = '%s' AND d >= '%s' AND d <= '%s';" %(code, today, later)
+  cursor.execute(query)
+  myresult = cursor.fetchall()
+  for i in myresult:
+    lst.append(i)
+  return lst
+
+def get_birthdays(phone_number):
+  lst = []  
+  cursor = mydb.cursor()
+  cursor.execute("USE roommate;")
+  code = check_member(phone_number)
+  today = datetime.date.today()
+  for i in range(7):
+    later = today + datetime.timedelta(days=i+1)
+    query = "SELECT * FROM BIRTHDAYS WHERE code = '%s' AND MONTH(d) = %d AND DAY(d) = %d;" %(code, later.month, later.day)
+    cursor.execute(query)
+    myresult = cursor.fetchall()
+    for i in myresult:
+      lst.append(i)
+  return lst
+
 
 if __name__ == '__main__':
   drop_db()

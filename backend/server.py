@@ -51,6 +51,9 @@ def new():
 
 @app.route('/main', methods = ["POST", "GET"])
 def main():
+    result = db.check_member(current_phone_number)
+    if result:
+        return redirect(url_for("group"))
     return render_template('main.html')
 
 @app.route('/create', methods = ["POST", "GET"])
@@ -75,6 +78,8 @@ def join():
 
 @app.route('/group', methods = ["POST", "GET"])
 def group():
+    events = db.get_events(current_phone_number)
+    birthdays =db.get_birthdays(current_phone_number)
     return render_template('group.html')
 
 if __name__ == "__main__":

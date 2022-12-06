@@ -16,6 +16,9 @@ def check_birthday(birthday):
         correctDate = False
     except ValueError:
         correctDate = True
+    
+    if len(birthday) > 8:
+        correctDate = True
     return correctDate
 
 def send_verification(phone_number):
