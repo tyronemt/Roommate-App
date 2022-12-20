@@ -4,10 +4,10 @@ from twilio.rest import Client
 import random
 import math
 
-def check_birthday(birthday):
-    m = int(birthday[0:2])
-    d = int(birthday[2:4])
-    y = int(birthday[4:8])
+def check_date(date):
+    m = int(date[0:2])
+    d = int(date[2:4])
+    y = int(date[4:8])
 
     correctDate = None
     try:
@@ -17,7 +17,7 @@ def check_birthday(birthday):
     except ValueError:
         correctDate = True
     
-    if len(birthday) > 8:
+    if len(date) > 8:
         correctDate = True
     return correctDate
 

@@ -42,7 +42,7 @@ def new():
     if request.method == 'POST':
         name = request.form.get('name', None)
         birthday = request.form.get('birthday', None)
-        if helper.check_birthday(birthday):
+        if helper.check_date(birthday):
             return render_template("new.html", error_message = "Invalid Birthday" )
         else:
             db.create_user(current_phone_number, name, birthday)
@@ -79,8 +79,23 @@ def join():
 @app.route('/group', methods = ["POST", "GET"])
 def group():
     events = db.get_events(current_phone_number)
-    birthdays =db.get_birthdays(current_phone_number)
-    return render_template('group.html')
+    birthdays = db.get_birthdays(current_phone_number)
+
+    print(events)
+    print(birthdays)
+    return render_template('group.html', events = events, birthdays = birthdays)
+
+@app.route('/create_event', methods = ["POST", "GET"])
+def create_event():
+    if request.method == 'POST':
+        name = request.form.get('name', None)
+        date = request.form.get('date', None)
+        if helper.check_date(date):
+            return render_template("create_event.html", error_message = "Invalid Date" )
+        else:
+            db.add_event(current_phone_number, name, date)
+            return redirect(url_for("group"))
+    return render_template('create_event.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -75,7 +75,11 @@ def add_event(phone_number, name, date):
   cursor = mydb.cursor()
   cursor.execute("USE roommate;")
   code = check_member(phone_number)
-  query = 'INSERT INTO EVENTS(code, NAME, d) VALUES ("%s", "%s", "%s");' % (code,name,date)
+  m = date[0:2]
+  d = date[2:4]
+  y = date[4:8]
+  da = y + '-' + m + '-' + d
+  query = 'INSERT INTO EVENTS(code, NAME, d) VALUES ("%s", "%s", "%s");' % (code,name,da)
   print(query)
   cursor.execute(query)
   mydb.commit()
@@ -171,7 +175,7 @@ def get_birthdays(phone_number):
   code = check_member(phone_number)
   today = datetime.date.today()
   for i in range(7):
-    later = today + datetime.timedelta(days=i+1)
+    later = today + datetime.timedelta(days=i)
     query = "SELECT * FROM BIRTHDAYS WHERE code = '%s' AND MONTH(d) = %d AND DAY(d) = %d;" %(code, later.month, later.day)
     cursor.execute(query)
     myresult = cursor.fetchall()
